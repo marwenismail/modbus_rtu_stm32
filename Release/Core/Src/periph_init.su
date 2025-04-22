@@ -1,0 +1,4 @@
+../Core/Src/periph_init.c:62:10:SystemClock_Config	96	static
+../Core/Src/periph_init.c:30:10:periph_init	48	static
+../Core/Src/periph_init.c:214:7:HAL_TIM_PeriodElapsedCallback	0	static
+../Core/Src/periph_init.c:231:7:Error_Handler	0	static,ignoring_inline_asm

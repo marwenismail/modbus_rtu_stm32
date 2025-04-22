@@ -1,0 +1,3 @@
+../Core/Src/mcu_interface.c:29:9:modbus_uart_send	0	static
+../Core/Src/mcu_interface.c:34:9:modbus_uart_receive	8	static
+../Core/Src/mcu_interface.c:39:9:modbus_uart_receive_timeout	8	static
