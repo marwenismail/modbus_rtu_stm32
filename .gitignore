@@ -1,0 +1,28 @@
+# STM32CubeMX
+*.ioc
+
+# STM32CubeIDE
+*.launch
+*.log
+*.settings/
+*.cproject
+*.project
+*.mxproject
+
+# Object files
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+
+# Build directories
+build/
+Debug/
+Release/
+
+# VS Code settings 
+.vscode/
+
