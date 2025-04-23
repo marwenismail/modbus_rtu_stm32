@@ -20,6 +20,23 @@ extern UART_HandleTypeDef huart1;
 
 
 
+uint8_t modbus_uart_get_readiness(){
+    uint8_t ret_val=0,max_retry=10;
+    
+    do
+        {
+        HAL_Delay(200);
+        ret_val=HAL_UART_GetState(&huart2);
+        if (ret_val==HAL_UART_STATE_READY|| ret_val==HAL_UART_STATE_RESET)
+        {
+            ret_val=0;
+            break;
+        }
+        max_retry--;
+        } while (ret_val||max_retry);
+    return ret_val;
+}
+
 /**
  * @brief this function is used to send data over uart on stm32 board
  * 

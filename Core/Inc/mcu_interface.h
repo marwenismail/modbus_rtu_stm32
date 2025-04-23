@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define MAX_SIZE 256
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +24,10 @@ extern "C" {
 uint8_t modbus_uart_send(uint8_t *data, uint8_t size);
 uint8_t modbus_uart_receive(uint8_t *data, uint8_t size);
 uint8_t modbus_uart_receive_timeout(uint8_t *data, uint8_t size, uint32_t timeout);
+uint8_t modbus_uart_get_readiness();
+
+
+
 #ifdef __cplusplus
 }
 #endif

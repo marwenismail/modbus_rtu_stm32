@@ -14,6 +14,7 @@
 #include "mcu_interface.h"
 
 
+
 typedef enum{
     READ_COLIS=0x01,
     READ_DISCRETE_INPUT=0x02,
@@ -23,11 +24,11 @@ typedef enum{
     WRITE_SINGLE_REG=0x06,
     WRITE_MULTIPLE_COILS=0x0F,
     WRITE_MULTIPLE_REG=0x10,
-    DIAGNOSTICS=0x08,
+    /*DIAGNOSTICS=0x08,
     GET_COM_EVENT_COUNTER=0x0B,
     WRITE_MASK_REG=0x16,
     READ_WRITE_MULTIPLE_REG=0x17,
-    REPORT_SLAVE_ID=0x11,
+    REPORT_SLAVE_ID=0x11,*/
     UNDEFINED=0xFF
 } ModbusFunctionCodeTypeDef;
 
@@ -41,15 +42,6 @@ uint8_t crc[2];
 } ModbusF1TypeDef;
 
 
-typedef struct {
-    uint8_t slave_adr;
-    uint8_t function;
-    uint8_t reg_adr[2];
-    uint8_t quantity[2];
-    uint8_t byte_count;
-    uint8_t data[2];
-    uint8_t crc[2];
-    } ModbusF3TypeDef;
 
 
 /**
@@ -58,7 +50,11 @@ typedef struct {
  * @return uint8_t 
  */
 uint8_t modbus_init(){
-    
+
+    // Get the bus readiness
+    if (modbus_uart_get_readiness() != 0) {
+        return 1; // Error in bus readiness
+    }
     return 0;
 }
 /**
@@ -143,6 +139,37 @@ uint8_t write_modbus_single(uint8_t slave_adr,uint8_t function, uint16_t start_a
     modbus_data.crc[0]=0x00; // CRC low byte
     modbus_data.crc[1]=0x00; // CRC high byte
     // Calculate CRC (for simplicity, using a dummy value here)
+
+    // send the data over uart
+    ret_val=modbus_uart_send((uint8_t *)&modbus_data, sizeof(modbus_data));
+    return ret_val;
+}
+
+uint8_t write_modbus_multiple(ModbusF3TypeDef *data)
+{
+    uint8_t modbus_data[ 9+ data->byte_count];
+    uint8_t ret_val=0;
+    modbus_data[0]=data->slave_adr;
+    switch (data->function)
+    {
+    case WRITE_MULTIPLE_COILS:
+    case WRITE_MULTIPLE_REG:
+        modbus_data[1]=data->function;
+        break;
+    default:
+        // Invalid function code
+        return 1;
+    }
+    modbus_data[2]=(data->reg_adr[1]) ;
+    modbus_data[3]=(data->reg_adr[0]);
+    modbus_data[4]=(data->quantity[1]);
+    modbus_data[5]=(data->quantity[0]);
+    modbus_data[6]=data->byte_count;
+    memcpy(&modbus_data[7],data->data,data->byte_count);
+
+    // Calculate CRC (for simplicity, using a dummy value here)
+    modbus_data[7+(data->byte_count)]=0x00; // CRC low byte
+    modbus_data[8+(data->byte_count)]=0x00; // CRC high byte
 
     // send the data over uart
     ret_val=modbus_uart_send((uint8_t *)&modbus_data, sizeof(modbus_data));

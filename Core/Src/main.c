@@ -93,6 +93,9 @@ int main(void)
     read_modbus(0x01,0X05,0x0000,0x0001);
     HAL_Delay(1000);
     write_modbus_single(0x01,0X05,0x0000,0x0001);
+    ModbusF3TypeDef data={0x01,0X0F,{0x00,0x00},{0x00,0x03},0x03,{0x0A,0x00,0x0A},{0x00,0x00}};
+
+    write_modbus_multiple(&data);
 	HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_13|GPIO_PIN_14);
   }
   /* USER CODE END 3 */
